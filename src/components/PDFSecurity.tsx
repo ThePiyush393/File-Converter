@@ -25,13 +25,13 @@ export default function PDFSecurity({ mode }: Props) {
       if (mode === 'unlock') {
         const doc = await PDFDocument.load(ab, { password, ignoreEncryption: false });
         const bytes = await doc.save();
-        setResult(new Blob([bytes], { type: 'application/pdf' }));
+        setResult(new Blob([new Uint8Array(bytes)], { type: 'application/pdf' }));
       } else {
         // Note: pdf-lib does not natively support password protection on save.
         // We simulate by saving with metadata. For real encryption, a backend or WASM tool is needed.
         const doc = await PDFDocument.load(ab, { ignoreEncryption: true });
         const bytes = await doc.save();
-        setResult(new Blob([bytes], { type: 'application/pdf' }));
+        setResult(new Blob([new Uint8Array(bytes)], { type: 'application/pdf' }));
         // Inform user
       }
     } catch (e: any) { setError(e.message?.includes('password') ? 'Wrong password, cannot unlock.' : e.message); }

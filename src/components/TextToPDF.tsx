@@ -44,7 +44,7 @@ export default function TextToPDF() {
     }
 
     const bytes = await pdfDoc.save();
-    setResult(new Blob([bytes], { type: 'application/pdf' }));
+    setResult(new Blob([new Uint8Array(bytes)], { type: 'application/pdf' }));
     setLoading(false);
   };
 

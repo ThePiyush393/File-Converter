@@ -36,7 +36,7 @@ export default function ImageToPDF() {
         page.drawImage(img, { x: (pw - w) / 2, y: (ph - h) / 2, width: w, height: h });
       }
       const bytes = await pdfDoc.save();
-      setResult(new Blob([bytes], { type: 'application/pdf' }));
+      setResult(new Blob([new Uint8Array(bytes)], { type: 'application/pdf' }));
     } catch (e: any) { setError(e.message || 'Conversion failed'); }
     setLoading(false);
   };

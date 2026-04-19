@@ -29,7 +29,7 @@ export default function AddPageNumber() {
       page.drawText(label, { x, y, size: fontSize, font, color: rgb(0.3, 0.3, 0.3) });
     });
     const bytes = await doc.save();
-    setResult(new Blob([bytes], { type: 'application/pdf' }));
+    setResult(new Blob([new Uint8Array(bytes)], { type: 'application/pdf' }));
     setLoading(false);
   };
 

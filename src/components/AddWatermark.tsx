@@ -38,12 +38,12 @@ export default function AddWatermark() {
         font,
         color: rgb(r, g, b),
         opacity,
-        rotate: { type: 'degrees', angle: -45 },
+        rotate: (window as any).degrees ? (window as any).degrees(-45) : undefined,
       });
     });
 
     const bytes = await doc.save();
-    setResult(new Blob([bytes], { type: 'application/pdf' }));
+    setResult(new Blob([new Uint8Array(bytes)], { type: 'application/pdf' }));
     setLoading(false);
   };
 

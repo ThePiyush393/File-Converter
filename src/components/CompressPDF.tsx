@@ -210,7 +210,7 @@ export default function CompressPDF() {
       const blob = new Blob([bytes], { type: 'application/pdf' });
       const savedBytes = file.size - blob.size;
       const savedPct = (savedBytes / file.size) * 100;
-      setResult({ blob, savedPct, savedBytes, imagesFound, imagesCompressed });
+      setResult({ blob: new Blob([new Uint8Array(bytes)], { type: 'application/pdf' }), savedPct, savedBytes, imagesFound, imagesCompressed });
     } catch (e: any) {
       setError(e.message || 'Compression failed');
     }

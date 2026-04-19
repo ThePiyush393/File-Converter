@@ -21,7 +21,7 @@ self.onmessage = async (e: MessageEvent<WorkerMessage>) => {
         // Setup some basic optimizations
         const pdfBytes = await pdfDoc.save({ useObjectStreams: false });
         
-        const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+        const blob = new Blob([new Uint8Array(pdfBytes)], { type: 'application/pdf' });
         self.postMessage({ type: 'SUCCESS', payload: { blob } });
         break;
       }
@@ -37,7 +37,7 @@ self.onmessage = async (e: MessageEvent<WorkerMessage>) => {
         }
 
         const pdfBytes = await mergedPdf.save();
-        const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+        const blob = new Blob([new Uint8Array(pdfBytes)], { type: 'application/pdf' });
         self.postMessage({ type: 'SUCCESS', payload: { blob } });
         break;
       }

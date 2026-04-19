@@ -48,7 +48,7 @@ export default function SplitPDF() {
           const [page] = await doc.copyPages(src, [i]);
           doc.addPage(page);
           const bytes = await doc.save();
-          results.push({ name: `page_${i+1}.pdf`, blob: new Blob([bytes], { type: 'application/pdf' }) });
+          results.push({ name: `page_${i+1}.pdf`, blob: new Blob([new Uint8Array(bytes)], { type: 'application/pdf' }) });
         }
       } else if (mode === 'range') {
         const groups = parseRanges(rangeInput, src.getPageCount());
@@ -57,7 +57,7 @@ export default function SplitPDF() {
           const pages = await doc.copyPages(src, groups[g]);
           pages.forEach(p => doc.addPage(p));
           const bytes = await doc.save();
-          results.push({ name: `split_${g+1}.pdf`, blob: new Blob([bytes], { type: 'application/pdf' }) });
+          results.push({ name: `split_${g+1}.pdf`, blob: new Blob([new Uint8Array(bytes)], { type: 'application/pdf' }) });
         }
       } else {
         let i = 0;
@@ -67,7 +67,7 @@ export default function SplitPDF() {
           const pages = await doc.copyPages(src, indices);
           pages.forEach(p => doc.addPage(p));
           const bytes = await doc.save();
-          results.push({ name: `part_${results.length+1}.pdf`, blob: new Blob([bytes], { type: 'application/pdf' }) });
+          results.push({ name: `part_${results.length+1}.pdf`, blob: new Blob([new Uint8Array(bytes)], { type: 'application/pdf' }) });
           i += everyN;
         }
       }

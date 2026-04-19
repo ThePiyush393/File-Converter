@@ -33,7 +33,7 @@ export default function RotatePDF() {
         });
     indices.forEach(i => { if (i >= 0 && i < doc.getPageCount()) doc.getPage(i).setRotation(degrees((doc.getPage(i).getRotation().angle + angle) % 360)); });
     const bytes = await doc.save();
-    setResult(new Blob([bytes], { type: 'application/pdf' }));
+    setResult(new Blob([new Uint8Array(bytes)], { type: 'application/pdf' }));
     setLoading(false);
   };
 

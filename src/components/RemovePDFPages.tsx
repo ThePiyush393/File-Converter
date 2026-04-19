@@ -42,7 +42,7 @@ export default function RemovePDFPages() {
       const pages = await dst.copyPages(src, keepIndices);
       pages.forEach(p => dst.addPage(p));
       const bytes = await dst.save();
-      setResult(new Blob([bytes], { type: 'application/pdf' }));
+      setResult(new Blob([new Uint8Array(bytes)], { type: 'application/pdf' }));
     } catch (e: any) { setError(e.message); }
     setLoading(false);
   };

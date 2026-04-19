@@ -26,7 +26,7 @@ export default function MergePDF() {
         pages.forEach(p => merged.addPage(p));
       }
       const bytes = await merged.save();
-      setResult(new Blob([bytes], { type: 'application/pdf' }));
+      setResult(new Blob([new Uint8Array(bytes)], { type: 'application/pdf' }));
     } catch (e: any) { setError(e.message || 'Merge failed'); }
     setLoading(false);
   };

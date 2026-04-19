@@ -1,0 +1,77 @@
+[2026-04-18] Project Setup: Vite + React application initialized.
+[2026-04-18] Dependencies: Installed core dependencies (pdf-lib, browser-image-compression, jszip, lucide-react, react-router-dom).
+[2026-04-18] UI Scaffolded: Created index.css with premium dark-mode, glassmorphism UI variables.
+[2026-04-18] Tool Grid Built: Configured data structure for 50+ offline tools and dynamically rendered the interactive App dashboard.
+[2026-04-18] Ralph Loop: Offline tool architecture complete.
+[2026-04-19T03:01Z] Step 3 (Web Workers): Implemented pdfWorker.ts for background offline PDF processing.
+[2026-04-19T03:05Z] Step 4 (Image Tools): Implemented imageWorker.ts and CompressImage.tsx UI component.
+
+=== RALPH LOOP ITERATION — 2026-04-19T03:09Z ===
+[DONE] CSS Design System: Complete premium dark-mode design (index.css) — variables, tool cards, dropzone, sliders, buttons, result panels, toasts, animations.
+[DONE] Shared Utils: formatSize, downloadBlob, canvasToBlob, blobToDataURL, fileToArrayBuffer helpers (utils.ts).
+[DONE] DropZone Component: Reusable drag-and-drop file input (DropZone.tsx).
+[DONE] PDF Tools (Functional):
+  - CompressPDF.tsx — Compress with quality slider
+  - MergePDF.tsx — Merge multiple PDFs with ordering
+  - SplitPDF.tsx — Split by all pages / ranges / every N
+  - RemovePDFPages.tsx — Remove specific pages
+  - RotatePDF.tsx — Rotate pages by angle
+  - AddWatermark.tsx — Text watermark with color/opacity/size controls
+  - AddPageNumber.tsx — Page numbering with position/font controls
+  - ImageToPDF.tsx — Multi-image to PDF with page size options
+  - TextToPDF.tsx — Word-wrapped text to multi-page PDF
+  - PDFSecurity.tsx — Unlock/Protect PDF
+[DONE] Image Tools (Functional):
+  - CompressImage.tsx — Quality + max-size sliders
+  - ConvertImage.tsx — JPG/PNG/WEBP converter with quality
+  - ResizeImage.tsx — Width/height with aspect ratio lock
+  - RotateImage.tsx — Arbitrary angle rotation with preview
+  - MergeImages.tsx — Vertical/horizontal merge with gap + color
+[DONE] Utility Tools (Functional):
+  - ZipMaker.tsx — Multi-file ZIP with DEFLATE compression
+  - ZipExtractor.tsx — Extract and download individual files
+  - PasswordGenerator.tsx — Configurable length/charset + strength meter
+[DONE] ComingSoon.tsx — Placeholder with install instructions for unimplemented tools
+[DONE] App.tsx — Complete rewrite: sidebar navigation + live search + tool registry + hero dashboard + back navigation
+[DONE] PWA Setup: manifest.json + sw.js service worker + index.html with SEO meta tags
+[DONE] TypeScript: Zero type errors confirmed (tsc --noEmit clean)
+
+NEXT OBJECTIVE: Install pdfjs-dist when network is available to enable PDF→Image tool. Consider adding vite-plugin-pwa for automated service worker management.
+
+=== RALPH LOOP ITERATION — 2026-04-19T04:42Z (FIXES) ===
+[DONE] CompressPDF — Real compression via canvas image re-encoding:
+  - Iterates all XObject image streams in PDF
+  - Re-encodes DCTDecode (JPEG) images at target quality via canvas
+  - Replaces stream bytes in-place, strips all metadata
+  - Uses object streams for additional deflate compression
+  - Honest messaging for text-only PDFs (explains why size won't change much)
+[DONE] CompressPDF — Prominent before→after size comparison card + download button shows compressed size
+[DONE] CompressImage — Prominent before→after size grid (Original | -X% | Compressed) + download shows size
+[DONE] ALL TOOLS — Consistent result panels across all 12 tools:
+  - MergePDF, SplitPDF, RemovePDFPages, RotatePDF, AddWatermark, AddPageNumber
+  - ImageToPDF, ConvertImage, ResizeImage (+ orig dimensions), RotateImage, MergeImages
+  - Every download button now shows the file size inline: "Download (2.4 MB)"
+[DONE] TypeScript: Zero errors confirmed (tsc --noEmit clean)
+
+NEXT OBJECTIVE: (1) Install pdfjs-dist to enable PDF→Image tool. (2) Consider vite-plugin-pwa for service worker. (3) Add drag-and-drop reordering for MergePDF.
+
+=== RALPH LOOP ITERATION — 2026-04-19T04:51Z (COMPRESSION FIX) ===
+ROOT CAUSE IDENTIFIED: Silent call stack overflow bug
+  - `String.fromCharCode(...rawBytes)` on large Uint8Arrays throws
+    "Maximum call stack size exceeded" for images >32KB
+  - The try/catch in the outer loop caught it silently → only metadata
+    strip (~1-2%) was applied → explains 5.23MB → 5.2MB behavior
+
+[DONE] Fixed btoa conversion using chunked approach (0x8000 byte chunks)
+[DONE] Added pako (already in node_modules as pdf-lib dep) for FlateDecode
+  image support — now handles both JPEG and zlib-compressed raw pixel images
+[DONE] Proper DCTDecode handling: raw JPEG bytes → base64 → canvas → re-encode
+[DONE] Proper FlateDecode handling: pako inflate → raw RGB/Gray pixels →
+  ImageData → canvas → JPEG re-encode
+[DONE] Only replaces image if new JPEG is ≥5% smaller (avoids bloating already-compressed images)
+[DONE] Detailed result stats: images found / images successfully recompressed
+[DONE] Honest messaging for text/vector-only PDFs explaining the limitation
+[DONE] TypeScript: Zero errors (tsc --noEmit clean)
+
+NEXT OBJECTIVE: (1) Install pdfjs-dist (PDF→Image). (2) PWA service worker.
+
